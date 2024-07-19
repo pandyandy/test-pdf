@@ -9,8 +9,9 @@ def get_image_base64(image_path):
         b64_string = base64.b64encode(img_file.read()).decode()
     return b64_string
 
-path = Path('static/logo.png')
-image = get_image_base64(path)
+current_dir = Path(__file__).parent
+image_path = current_dir / 'static' / 'logo.png'
+image_base64 = get_image_base64(image_path)
 
 markdown_content = f"""
 ## Environment Initialization Instructions
@@ -35,7 +36,7 @@ markdown_content = f"""
     - DEV
 
 <p align="center">
-    <img src="data:image/png;base64,{image}" alt="Keboola Logo" width="300">
+    <img src="data:image/png;base64,{image_base64}" alt="Keboola Logo" width="300">
 </p>
 
 8. You may set the **ENV restrictions**:
