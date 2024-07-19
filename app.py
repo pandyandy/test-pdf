@@ -1,13 +1,25 @@
 import streamlit as st
 import markdown2
-import pdfkit
+from weasyprint import HTML
 import base64
 from pathlib import Path
+
+def markdown_to_pdf(md_content):
+    html_content = markdown2.markdown(md_content)
+    pdf = HTML(string=html_content).write_pdf()
+    return pdf
+
+# Function to generate a download link
+def generate_download_link(pdf, filename):
+    b64_pdf = base64.b64encode(pdf).decode('utf-8')
+    href = f'<a href="data:application/octet-stream;base64,{b64_pdf}" download="{filename}">Download PDF</a>'
+    return href
 
 def get_image_base64(image_path):
     with open(image_path, "rb") as img_file:
         b64_string = base64.b64encode(img_file.read()).decode()
     return b64_string
+
 
 current_dir = Path(__file__).parent
 image_path = current_dir / 'static' / 'logo.png'
@@ -47,12 +59,6 @@ markdown_content = f"""
 """
 st.markdown(markdown_content, unsafe_allow_html=True)
 
-def create_pdf(html):
-    pdfkit.from_string(html, 'output.pdf')
-    with open('output.pdf', 'rb') as f:
-        return f.read()
-
-if st.button('Convert to PDF'):
-    html_content = markdown2.markdown(markdown_content)
-    pdf = create_pdf(html_content)
-    st.download_button('Download PDF', data=pdf, file_name='instructions.pdf', mime='application/pdf')
+if st.button("Convert to PDF"):
+    pdf = markdown_to_pdf(markdown_content)
+    st.markdown(generate_download_link(pdf, "output.pdf"), unsafe_allow_html=True)
