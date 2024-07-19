@@ -1,15 +1,16 @@
 import streamlit as st
-import markdown2
-from weasyprint import HTML
 import base64
 from pathlib import Path
+
+
+import markdown2
+from weasyprint import HTML
 
 def markdown_to_pdf(md_content):
     html_content = markdown2.markdown(md_content)
     pdf = HTML(string=html_content).write_pdf()
     return pdf
 
-# Function to generate a download link
 def generate_download_link(pdf, filename):
     b64_pdf = base64.b64encode(pdf).decode('utf-8')
     href = f'<a href="data:application/octet-stream;base64,{b64_pdf}" download="{filename}">Download PDF</a>'
@@ -48,7 +49,7 @@ markdown_content = f"""
     - DEV
 
 <p align="center">
-    <img src="data:image/png;base64,{image_base64}" alt="Keboola Logo" width="300">
+    <img src="data:image/png;base64,{image_base64}" alt="Keboola Logo" width="100">
 </p>
 
 8. You may set the **ENV restrictions**:
